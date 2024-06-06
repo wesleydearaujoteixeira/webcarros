@@ -4,7 +4,8 @@ import {auth} from '../services/firebase'
 
 type AuthContextData = {
     signed: boolean;
-    loadingAuth: boolean
+    loadingAuth: boolean,
+    setAuth: (tipo: boolean) => void
 
 }
 
@@ -13,7 +14,7 @@ type UserProps = {
 
     uid: string | null, 
     name: string | null,
-    email: string | null,
+    email: string | null
 }
 
 
@@ -26,6 +27,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
 
     useEffect(() => {
+
        const authorided =  onAuthStateChanged( auth, (user) => {
 
         if(user) {
@@ -53,7 +55,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
 
     return (
-        <AuthContext.Provider value={{signed: !!user, loadingAuth}}>
+        <AuthContext.Provider value={{
+            signed: !!user, 
+            loadingAuth,
+            setAuth
+
+            }}>
             {children}    
         </AuthContext.Provider>
     )

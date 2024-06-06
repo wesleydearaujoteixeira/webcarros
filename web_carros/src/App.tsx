@@ -27,13 +27,15 @@ const router = createBrowserRouter([
       },
 
       {
-        element: <Private> <Dash/> </Private> ,
-        path: '/dashboard'
+        path: '/dashboard',
+        element: <Private> <Dash/> </Private>,
+       
       },
 
       {
+        path: '/dashboard/new',
         element: <Private> <New/> </Private>,
-        path: '/dashboard/new'
+    
       },
 
     ]

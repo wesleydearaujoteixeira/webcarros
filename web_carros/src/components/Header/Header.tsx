@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 import { FiLogIn, FiUser } from 'react-icons/fi';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 
 function Header() {
 
-    const signed = false;
-    const loadingAuth = false;
+    const {signed, loadingAuth} = useContext(AuthContext);
+
 
     return ( 
         
@@ -17,7 +19,7 @@ function Header() {
                     </Link>
 
 
-                {!loadingAuth && signed && (
+                {loadingAuth == true && signed && (
                     <Link to='/dashboard'>
                         <div className='border-2 rounded-full p-1 border-gray-900'>
                             <FiUser size={24} color="#000" />
@@ -25,7 +27,7 @@ function Header() {
                     </Link>
                 )}
 
-                {!loadingAuth && !signed && (
+                {loadingAuth == true && !signed && (
                     <Link to='/login'>
                         <FiLogIn size={24} color="#000" />
                     </Link>

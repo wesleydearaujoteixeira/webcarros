@@ -3,18 +3,18 @@ import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 
-export function Private ({children}: {children: ReactNode}) {
+export function Private ({children}: {children: ReactNode}): any {
 
-     const {signed, loadingAuth} = useContext(AuthContext);
+     const {signed, setAuth} = useContext(AuthContext);
 
-     if(loadingAuth) {
-        return <div></div> 
-     }
-
+  
      if(!signed) {
+        setAuth(false)
         return <Navigate to="/login" />
      }
 
-
+    setAuth(true)
     return children;
+
+
 }
