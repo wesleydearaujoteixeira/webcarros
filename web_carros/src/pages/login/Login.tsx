@@ -1,10 +1,15 @@
-import { Link } from 'react-router-dom';
+import {useEffect} from 'react';
+import { Link, useNavigate} from 'react-router-dom';
 import logoimg from '../../assets/logo.svg';
 import Container from '../../components/container/Contaniner';
 import { Inputs } from '../../components/inputs/Inputs';
 import {useForm} from 'react-hook-form';
 import { z } from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
+import {auth} from '../../services/firebase';
+import { signInWithEmailAndPassword, signOut} from 'firebase/auth';
+
+
 
 
 const schema = z.object({
@@ -18,15 +23,35 @@ type FormData = z.infer <typeof schema>
 
 export function Login() {
 
-    const { register, handleSubmit, formState: {errors}} = useForm<FormData>({
+    const navigate = useNavigate();
 
+    const { register, handleSubmit, formState: {errors}} = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: "onChange"
-    
     });
 
+    useEffect(() => {
+        async function handleLogOut () {
+            await signOut(auth)
+        }
+
+        handleLogOut();
+    }, [])
+
+
     const Submit = (data: FormData) => {
-        console.log(data);
+        signInWithEmailAndPassword(auth, data.email, data.password)
+
+        .then((user) => {
+            console.log("Usuário Logado")
+            console.log(user)
+            navigate('/dashboard')
+        })
+
+        .catch(err => {
+            console.log(" Erra ");
+            console.log(err);
+        })
     }
 
     return ( 

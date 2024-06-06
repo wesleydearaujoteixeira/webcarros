@@ -7,8 +7,11 @@ import { Login } from "./pages/login/Login"
 import {Register} from "./pages/register/Register"
 import Layout from "./components/Layout/Layout"
 
+import { Private } from "./routes/private"
+
 
 const router = createBrowserRouter([
+
   {
     element: <Layout/>,
     children: [
@@ -24,12 +27,12 @@ const router = createBrowserRouter([
       },
 
       {
-        element: <Dash/>,
+        element: <Private> <Dash/> </Private> ,
         path: '/dashboard'
       },
 
       {
-        element: <New/>,
+        element: <Private> <New/> </Private>,
         path: '/dashboard/new'
       },
 

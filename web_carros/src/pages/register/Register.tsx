@@ -1,11 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useEffect } from 'react';
+
 import logoimg from '../../assets/logo.svg';
 import Container from '../../components/container/Contaniner';
 import { Inputs } from '../../components/inputs/Inputs';
+
 import {useForm} from 'react-hook-form';
 import { z } from 'zod';
-import {zodResolver} from '@hookform/resolvers/zod';
 
+import {zodResolver} from '@hookform/resolvers/zod';
+import { auth } from '../../services/firebase'
+import { createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth';
 
 const schema = z.object({
 
@@ -20,6 +25,7 @@ type FormData = z.infer <typeof schema>
 
 export function Register() {
 
+    const navigate = useNavigate();
     const { register, handleSubmit, formState: {errors}} = useForm<FormData>({
 
         resolver: zodResolver(schema),
@@ -27,8 +33,33 @@ export function Register() {
     
     });
 
-    const Submit = (data: FormData) => {
-        console.log(data);
+
+    useEffect(() => {
+        async function handleLogOut () {
+            await signOut(auth)
+        }
+
+        handleLogOut();
+    }, [])
+
+
+
+    const Submit = async (data: FormData) => {
+        createUserWithEmailAndPassword(auth, data.email, data.password)
+        .then( async (user) => {
+            await updateProfile(user.user, {
+                displayName: data.name
+            });
+
+           navigate('/dashboard')
+        })
+
+        .catch((error) => {
+            console.log('Erro ao cadastrar usuário');
+            console.log(error);
+        })
+
+       
     }
 
     return ( 
@@ -70,7 +101,7 @@ export function Register() {
                             register={register}
                         />
 
-                    <button type='submit' className='bg-zinc-900 w-full rounded-md text-white text-2xl py-2'> Enviar </button>
+                    <button type='submit' className='bg-zinc-900 w-full rounded-md text-white text-2xl py-2'> Cadastrar </button>
                 </form>
 
                 <Link to='/login'>
