@@ -41,7 +41,7 @@ export function Login() {
 
                 <form 
                 onSubmit={handleSubmit(Submit)}
-                className='bg-white max-w-xl h-30 w-full rounded-lg flex flex-col'>
+                className='bg-white max-w-xl h-30 w-full rounded-lg flex flex-col p-4 hover: border-blue-500'>
 
                         <Inputs
                             name='email'
@@ -59,8 +59,14 @@ export function Login() {
                             register={register}
                         />
 
-                    <button> Enviar </button>
+                    <button type='submit' className='bg-zinc-900 w-full rounded-md text-white text-2xl py-2'> Enviar </button>
                 </form>
+
+
+                <Link to='/register'>
+                    Ainda não possui uma conta? Cadastre-se
+                </Link>
+                
             </div>
         </Container>
      );

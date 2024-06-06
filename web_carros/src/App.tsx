@@ -4,7 +4,7 @@ import { Dash } from "./pages/dashboard/Dash"
 import New from "./pages/dashboard/New/New"
 import { Home } from "./pages/home/Home"
 import { Login } from "./pages/login/Login"
-import Register from "./pages/register/Register"
+import {Register} from "./pages/register/Register"
 import Layout from "./components/Layout/Layout"
 
 
@@ -31,7 +31,8 @@ const router = createBrowserRouter([
       {
         element: <New/>,
         path: '/dashboard/new'
-      }
+      },
+
     ]
   },
 
