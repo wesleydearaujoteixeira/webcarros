@@ -22,9 +22,7 @@ export const AuthContext = createContext({} as AuthContextData);
 export const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const [user, setUser] = useState <UserProps | null> (null);
-
     const [loadingAuth, setAuth] = useState(true);
-
 
     useEffect(() => {
 
@@ -38,11 +36,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
                 email: user?.displayName,
             })
 
-            setAuth(true)
+            setAuth(false)
 
         } else {
             // Não tem user logado
             setUser(null)
+            
             setAuth(false)
         }
 

@@ -7,7 +7,9 @@ import { AuthContext } from '../../context/AuthContext';
 
 function Header() {
 
-    const {signed, loadingAuth} = useContext(AuthContext);
+
+    const {signed,loadingAuth} = useContext(AuthContext);
+
 
 
     return ( 
@@ -19,7 +21,7 @@ function Header() {
                     </Link>
 
 
-                {loadingAuth == true && signed && (
+                {!loadingAuth && signed && (
                     <Link to='/dashboard'>
                         <div className='border-2 rounded-full p-1 border-gray-900'>
                             <FiUser size={24} color="#000" />
@@ -27,7 +29,7 @@ function Header() {
                     </Link>
                 )}
 
-                {loadingAuth == true && !signed && (
+                {!loadingAuth && !signed && (
                     <Link to='/login'>
                         <FiLogIn size={24} color="#000" />
                     </Link>
