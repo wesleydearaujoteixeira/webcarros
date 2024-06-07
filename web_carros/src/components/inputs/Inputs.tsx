@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {RegisterOptions, UseFormRegister} from 'react-hook-form'
 
 
@@ -18,7 +17,7 @@ export function Inputs ( {name, type, placeholder, register, error, rules}: Prop
     return (
         <>
             <input
-                className={`mb-3 p-3 rounded-md`}
+                className= "mb-3 p-3 rounded-md w-full"
                 placeholder={placeholder}
                 type={type}
                 {...register(name, rules)}

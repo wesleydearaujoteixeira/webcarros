@@ -4,8 +4,9 @@ import {auth} from '../services/firebase'
 
 type AuthContextData = {
     signed: boolean;
-    loadingAuth: boolean,
-    setAuth: (tipo: boolean) => void
+    loadingAuth: boolean;
+    handleInfoUser: ({uid, name, email}: UserProps) => void;
+    user: UserProps | null;
 
 }
 
@@ -53,13 +54,25 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     }, [])
 
 
+
+    function handleInfoUser ({name, email, uid}: UserProps) {
+
+        setUser({
+            name, 
+            email, 
+            uid
+        })
+    }
+
+
     return (
         <AuthContext.Provider value={{
             signed: !!user, 
             loadingAuth,
-            setAuth
-
+            handleInfoUser,
+            user
             }}>
+
             {children}    
         </AuthContext.Provider>
     )

@@ -1,8 +1,11 @@
+import Container from "../../components/container/Contaniner";
+import PanelHeader from "../../components/panelHeader/PanelHeader";
+
 export function Dash() {
     return ( 
-        <div>
-            <h1> Dashboard dos carros </h1>
-        </div>
+        <Container>
+           <PanelHeader/>
+        </Container>
      );
 }
 
