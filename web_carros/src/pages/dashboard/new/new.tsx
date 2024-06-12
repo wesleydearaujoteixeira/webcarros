@@ -1,10 +1,26 @@
 import Container from "../../../components/container/Contaniner";
 import PanelHeader from "../../../components/panelHeader/PanelHeader";
-import {FiUpload} from 'react-icons/fi';
+import {FiTrash, FiUpload} from 'react-icons/fi';
 import { Inputs } from "../../../components/inputs/Inputs";
 import {z} from 'zod';
 import { zodResolver} from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { ChangeEvent, useContext, useState } from "react";
+import { AuthContext } from "../../../context/AuthContext";
+import { v4 as uuidV4} from "uuid";
+import { storage, db } from "../../../services/firebase";
+import { addDoc, collection } from "firebase/firestore";
+
+
+
+import {
+    ref, 
+    uploadBytes,
+    getDownloadURL,
+    deleteObject,
+
+} from 'firebase/storage';
+
 
 
 const schema = z.object({
@@ -14,7 +30,7 @@ const schema = z.object({
     km: z.string().min(1, " O Km tbm é obrigatório"),
     price: z.string().min(1, " O preço é obrigatório "),
     city: z.string().min(1, "A Cidade é obrigatória"),
-    whatsapp: z.string().min(1, " O campo do whatsapp também  é obrigatório").refine((value) => /^\d{9,11}$/.test(value), {
+    whatsapp: z.string().min(1, " O campo do whatsapp também  é obrigatório").refine((value) => /^\d{10,11}$/.test(value), {
         message: "Número de telefone inválido"
     }),
 
@@ -28,16 +44,149 @@ type FormData = z.infer<typeof schema>;
 function New() {
 
 
+    type ImageProps = {
+        uid: string, 
+        name: string,
+        previewUrl: string,
+        url: string,
+    }
+
+
+
+    const { user } = useContext(AuthContext);
 
     const {register, handleSubmit, formState: {errors}, reset } = useForm <FormData> ({
         resolver: zodResolver(schema),
         mode: "onChange"
-    })
+    });
+
+
+    
+    const [CarImages, setCarImages] = useState<ImageProps[]>([]);
 
 
     function Submited (data: FormData) {
-        console.log(data);
+
+        if(CarImages.length <= 0) {
+            alert(" Você precisa enviar a foto de um carro antes de prosseguir");
+            return;
+        }
+
+
+        const carListImages = CarImages.map(car => {
+
+            return {
+                uid: car.uid,
+                name: car.name,
+                url: car.url,
+            }
+        });
+
+        addDoc(collection(db, "cars"), {
+            name: data.name,
+            model: data.model,
+            year: data.year,
+            km: data.km,
+            price: data.price,
+            city: data.city,
+            whatsapp: data.whatsapp,
+            description: data.description,
+            created: new Date(),
+            owner: user?.name,
+            uid: user?.uid,
+            images: carListImages
+
+        }).then(() => {
+            reset();
+            setCarImages([]);
+            alert('Cadastrado!')
+        })
+        .catch (err => {
+            console.log(" erro ao cadastrar carro ", err);
+        })
+
+
+
+
+        
     }
+
+
+   const handleFile = async (e: ChangeEvent<HTMLInputElement>) => {
+        
+        if(e.target.files && e.target.files[0]) {
+            const images = e.target.files[0];
+            
+
+            if(images.type === 'image/jpeg' || images.type === 'image/png') {
+                await handleUpload(images);
+            }
+            else {
+                alert(' Não é possivel enviar imagens de outro formato');
+                return;
+            }
+        }
+    }
+
+    async function handleUpload (image: File) {
+
+        if(!user?.uid) {
+            return;
+        }
+
+        const currentUid = user?.uid;
+        const uidImage = uuidV4();
+
+        const uploadRef = ref(storage, `images/${currentUid}/${uidImage}`)
+
+        uploadBytes(uploadRef, image)
+        .then((snapShot) => {
+            getDownloadURL(snapShot.ref).then((downloadUrL) => {
+                
+                const imageObject = {
+
+                    uid:currentUid,
+                    name: uidImage,
+                    previewUrl: URL.createObjectURL(image),
+                    url: downloadUrL,
+
+                }
+
+                setCarImages([...CarImages, imageObject]);
+
+
+
+            
+            })
+        })
+
+
+    }
+
+
+    const deleteImg = async (item: ImageProps ) => {
+
+
+        const imagePath = `images/${item.uid}/${item.name}`;
+
+        const imageRef = ref(storage, imagePath);
+
+        try{
+            await deleteObject(imageRef);
+            
+        const newImages = CarImages.filter(img => img.name !==  item.name);
+        setCarImages(newImages)
+
+        }catch(err){
+            console.log(err);
+            return;
+
+        }
+
+
+
+    }
+
 
 
     return ( 
@@ -52,9 +201,28 @@ function New() {
                     </div>
 
                     <div className="cursor-pointer">
-                        <input className="opacity-0 cursor-pointer" type="file" accept="image/*" />
+                        <input 
+                        className="opacity-0 cursor-pointer" 
+                        type="file"   
+                        onChange={(e) => handleFile(e)} 
+                        accept="image/*" />
                     </div>
                 </button>
+
+                {CarImages.map((img) => {
+                    return (
+                        <div key={img.name} 
+                            className="w-full h-32 flex items-center justify-center relative"
+                        >
+                            <button className="absolute" onClick={() => deleteImg(img)}>
+                                <FiTrash size={30} color="#fff"/>
+                            </button>
+
+                            <img src={img.previewUrl} className="w-full rounded-lg object-cover h-32 " />
+                        </div>
+                    )
+                })}
+
             </div>
 
             <div className="w-full bg-white p-3 rounded-lg flex flex-col sm:flex-row items-center gap-2 mt-2">
