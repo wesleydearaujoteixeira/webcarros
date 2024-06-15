@@ -26,7 +26,7 @@ type CarsImages = {
 
 export function Home() {
 
-    const [cars, setCars] = useState<CarsProps[]>([]);
+    const [cars, setCars] = useState <CarsProps[]> ([]);
 
     const [loadImages, setLoadImages] = useState<string[]>([]);
 
