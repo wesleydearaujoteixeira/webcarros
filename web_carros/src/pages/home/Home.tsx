@@ -1,9 +1,6 @@
 import Container from "../../components/container/Contaniner";
-
 import {useState, useEffect} from 'react';
-
 import { db } from '../../services/firebase';
-
 import { collection, query, getDocs, orderBy} from 'firebase/firestore';
 import { Link } from "react-router-dom";
 
@@ -23,13 +20,15 @@ type CarsProps = {
 type CarsImages = {
     name: string,
     uid: string,
-    url: string,
+    url: string
 }
 
 
 export function Home() {
 
     const [cars, setCars] = useState<CarsProps[]>([]);
+
+    const [loadImages, setLoadImages] = useState<string[]>([]);
 
     useEffect(() =>  {
         function loadCars() {
@@ -40,7 +39,7 @@ export function Home() {
             getDocs(queryRef)           
             .then((snapshot) => {
 
-                let listagem = [] as CarsProps[]
+                const listagem = [] as CarsProps[]
 
                 snapshot.forEach((doc) => {
 
@@ -64,7 +63,11 @@ export function Home() {
         loadCars();
     }, [])
 
-
+   const handleImageLoad = (id: string) => {
+    setLoadImages((loadingImages) => {
+        return [...loadingImages, id]
+    });
+   }
 
 
     return ( 
@@ -85,12 +88,20 @@ export function Home() {
                     return (
                         <Link to={`/car/${item.id}`} key={item.id}> 
                             <section className="w-full bg-white rounded-lg">
+                                <div 
+                                className="w-full h-72 bg-slate-200"
+                                style={{display: loadImages.includes(item.id) ? 'none' : 'block'}}>
+                                
+                                
+                                </div>
                                 <img 
                                 className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all"
 
                                 src={item.images[0].url} 
 
-                                alt="Carro" 
+                                alt="Carro"
+                                onLoad={() => handleImageLoad(item.id) } 
+
                                 />
             
                                 <p className="font-bold mt-1 mb-2 px-2"> {item.name} </p>
