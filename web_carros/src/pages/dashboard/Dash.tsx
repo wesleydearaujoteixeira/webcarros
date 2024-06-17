@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import Container from "../../components/container/Contaniner";
+import Container from "../../components/container/Container";
 import PanelHeader from "../../components/panelHeader/PanelHeader";
 import { FiTrash2 } from "react-icons/fi";
 import {collection, getDocs, where,  query, deleteDoc, doc } from 'firebase/firestore';
-import {db} from '../../services/firebase';
+import {db, storage} from '../../services/firebase';
 import {AuthContext} from '../../context/AuthContext';
 import { Link } from "react-router-dom";
+import {ref, deleteObject} from 'firebase/storage';
 
 
 type CarsProps = {
@@ -23,7 +24,8 @@ type CarsProps = {
 type ImgCollection = {
    id: string,
    uid: string,
-   url: string
+   url: string,
+   name: string
 }
 
 
@@ -31,9 +33,7 @@ export function Dash() {
 
 
    const [cars, setCars] = useState<CarsProps[]>([]);
-
    const { user } =  useContext(AuthContext);
-
 
 
    useEffect(() =>  {
@@ -77,15 +77,32 @@ export function Dash() {
   }, [user]);
 
 
-  const handleDelete = async (idx: string) => {
+  const handleDelete = async (car: CarsProps) => {
 
 
-   const docRef = doc(db, "cars", idx);
+   const docRef = doc(db, "cars", car.id);
    await deleteDoc(docRef);
 
-   const newIndex = cars.findIndex((item) => item.id == idx);
+   car.images.map( async (image) => {
+
+      const imagePath = `images/${image.uid}/${image.name}`
+      const imageRef = ref(storage, imagePath);
+
+     try {
+         await deleteObject(imageRef);
+
+     } catch (error) {
+      console.log(error, " Erro ao excluir")
+     }
+
+   });
+
+
+   const newIndex = cars.findIndex((item) => item.id == car.id);
    cars.splice(newIndex, 1);
    setCars([...cars]);
+
+
   }
 
 
@@ -101,7 +118,7 @@ export function Dash() {
                         <section className="w-full mt-2 bg-white rounded-lg relative">
 
                      <button 
-                     onClick={() => handleDelete(cars.id)}
+                     onClick={() => handleDelete(cars)}
                      className="absolute right-2">
                         <FiTrash2 size={30} color="#fff" />
                      </button>

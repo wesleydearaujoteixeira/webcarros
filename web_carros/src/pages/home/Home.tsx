@@ -1,4 +1,4 @@
-import Container from "../../components/container/Contaniner";
+import Container from "../../components/container/Container";
 import {useState, useEffect} from 'react';
 import { db } from '../../services/firebase';
 import { collection, query, getDocs, orderBy} from 'firebase/firestore';

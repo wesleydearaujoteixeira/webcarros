@@ -1,4 +1,4 @@
-import Container from "../../../components/container/Contaniner";
+import Container from "../../../components/container/Container";
 import PanelHeader from "../../../components/panelHeader/PanelHeader";
 import {FiTrash, FiUpload} from 'react-icons/fi';
 import { Inputs } from "../../../components/inputs/Inputs";
