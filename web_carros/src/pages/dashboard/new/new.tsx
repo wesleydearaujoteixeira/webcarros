@@ -10,7 +10,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { v4 as uuidV4} from "uuid";
 import { storage, db } from "../../../services/firebase";
 import { addDoc, collection } from "firebase/firestore";
-
+import { useNavigate } from "react-router-dom";
 
 
 import {
@@ -59,10 +59,13 @@ function New() {
         resolver: zodResolver(schema),
         mode: "onChange"
     });
+    
+
 
 
     
     const [CarImages, setCarImages] = useState<ImageProps[]>([]);
+    const navigate = useNavigate();
 
 
     function Submited (data: FormData) {
@@ -83,7 +86,7 @@ function New() {
         });
 
         addDoc(collection(db, "cars"), {
-            name: data.name,
+            name: data.name.toUpperCase(),
             model: data.model,
             year: data.year,
             km: data.km,
@@ -99,7 +102,10 @@ function New() {
         }).then(() => {
             reset();
             setCarImages([]);
-            alert('Cadastrado!')
+            alert('Cadastrado!');
+            navigate('/');
+            
+
         })
         .catch (err => {
             console.log(" erro ao cadastrar carro ", err);
