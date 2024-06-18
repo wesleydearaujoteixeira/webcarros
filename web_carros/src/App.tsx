@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 import { Car } from "./pages/car/CarDetail"
 import { Dash } from "./pages/dashboard/Dash"
-import  { New } from "./pages/dashboard/New/New"
+import  { NewDash } from "./pages/dashboard/new/NewDash"
 import { Home } from "./pages/home/Home"
 import { Login } from "./pages/login/Login"
 import {Register} from "./pages/register/Register"
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
 
       {
         path: '/dashboard/new',
-        element: <Private> <New/> </Private>,
+        element: <Private> <NewDash/> </Private>,
     
       },
 

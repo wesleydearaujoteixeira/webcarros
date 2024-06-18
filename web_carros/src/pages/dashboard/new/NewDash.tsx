@@ -41,7 +41,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 
-export function New() {
+export function NewDash() {
 
 
     type ImageProps = {
