@@ -194,7 +194,6 @@ function New() {
     }
 
 
-
     return ( 
         <Container>
             <PanelHeader/>
@@ -353,4 +352,4 @@ function New() {
     )
 }
 
-export default New;
+export default New

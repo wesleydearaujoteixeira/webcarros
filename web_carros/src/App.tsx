@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom"
 import { Car } from "./pages/car/CarDetail"
 import { Dash } from "./pages/dashboard/Dash"
-import New from "./pages/dashboard/New/New"
+import New from "./pages/dashboard/New/New.tsx"
 import { Home } from "./pages/home/Home"
 import { Login } from "./pages/login/Login"
 import {Register} from "./pages/register/Register"
