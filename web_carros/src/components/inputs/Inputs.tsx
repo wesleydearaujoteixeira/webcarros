@@ -6,7 +6,7 @@ type Props = {
     name: string, 
     type: string,
     placeholder: string,
-    register: UseFormRegister<any>,
+    register: UseFormRegister <any>,
     error?: string, 
     rules?: RegisterOptions
 }
