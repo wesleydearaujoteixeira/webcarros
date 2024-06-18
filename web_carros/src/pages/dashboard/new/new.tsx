@@ -17,7 +17,7 @@ import {
     ref, 
     uploadBytes,
     getDownloadURL,
-    deleteObject,
+    deleteObject
 
 } from 'firebase/storage';
 
@@ -41,7 +41,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 
-function New() {
+export function New() {
 
 
     type ImageProps = {
@@ -352,4 +352,3 @@ function New() {
     )
 }
 
-export default New
